@@ -4,7 +4,7 @@ package dsl
 
 %union {
   s string
-  //expr *Expr
+  expr *Expr
 }
 
 %token WHILE
