@@ -1,0 +1,15 @@
+/while/           { return WHILE }
+/print/           { return PRINT }
+/;/     { return END_LINE }
+/\+|-/  { lval.s = yylex.Text(); return ADD_OP }
+/\*|\//  { lval.s = yylex.Text(); return MUL_OP }
+/=/     { return ASSIGN }
+/\(/ { return BEGIN_EXPRESSION  }
+/\)/ { return END_EXPRESSION }
+/\{/ { return BEGIN_BLOCK }
+/\}/ { return END_BLOCK }
+/[0-9]+/ { lval.s = yylex.Text(); return NUMBER }
+/[a-z][a-z0-9]*/  { lval.s = yylex.Text(); return IDENTIFIER }
+//
+package dsl
+
