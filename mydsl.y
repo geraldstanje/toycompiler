@@ -33,6 +33,9 @@ program: statement
   programNode := newProgramNode($2)
   programNode.Left = $1.node
   programNode.Right = $3.node
+  $$.node = programNode
+  
+  cast(yylex).InitAST($$.node)
 }
 
 statement: assignation 

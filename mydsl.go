@@ -1,7 +1,7 @@
 package dsl
 
 import (
-	//"fmt"
+	"fmt"
 	"log"
 	"os"
 	//"strings"
@@ -10,11 +10,27 @@ import (
 )
 
 type MyDsl struct {
-	//ast []*Expr
+	ast *Node
 }
 
 func Create() (d *MyDsl) {
 	return &MyDsl{}
+}
+
+func (d *MyDsl) InitAST(root *Node) {
+	if d.ast == nil {
+		d.ast = root
+	}
+}
+
+// Walk traverses a tree depth-first
+func (d *MyDsl) Walk(n *Node) {
+  if n == nil {
+    return
+  }
+  d.Walk(t.Left)
+  fmt.Println(n.Type)
+  d.Walk(t.Right)
 }
 
 func (d *MyDsl) Init(filename string) {
@@ -25,6 +41,7 @@ func (d *MyDsl) Init(filename string) {
 
 	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = d }))
 
+	fmt.Println(d.ast.Type)
 	//for _, node := range d.ast {
 	//	fmt.Println(node.Type)
 	//}
