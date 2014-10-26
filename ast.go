@@ -11,7 +11,7 @@ type Expr struct {
 	Right *Expr
 }
 
-func NewProgramNode(kind int, name yySymType) (*Expr, error) {
+func newProgramNode(expr yySymType) (*Expr, error) {
 	//fmt.Println("NewProgramNode called", name)
 
 	e := new(Expr)
@@ -22,7 +22,7 @@ func NewProgramNode(kind int, name yySymType) (*Expr, error) {
 	return e, nil
 }
 
-func NewAssignNode(kind int, name yySymType) (*Expr, error) {
+func newAssignNode(expr yySymType) (*Expr, error) {
 	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
@@ -33,19 +33,18 @@ func NewAssignNode(kind int, name yySymType) (*Expr, error) {
 	return e, nil
 }
 
-func NewIdentifierNode(kind int, name yySymType) (*Expr, error) {
+func newIdentifierNode(expr yySymType) (*Expr, error) {
 	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
 	e.Kind = 0
-	e.Type = "token"
+	e.Type = "Indentifier"
 	e.Left = nil
 	e.Right = nil
 	return e, nil
 }
 
 // Walk down tree
-func (tree *Tree) Walk(level int) (*Tree, error) {
+//func (tree *Tree) Walk(level int) (*Tree, error) {
 
-
-}
+//}
