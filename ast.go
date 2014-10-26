@@ -4,17 +4,15 @@ import (
 //"fmt"
 )
 
-type Expr struct {
+type Node struct {
 	Kind  int
 	Type  string
-	Left  *Expr
-	Right *Expr
+	Left  *Node
+	Right *Node
 }
 
-func newProgramNode(expr *Expr) *Expr {
-	//fmt.Println("NewProgramNode called", name)
-
-	e := new(Expr)
+func newProgramNode(name yySymType) *Node {
+	e := new(Node)
 	e.Kind = 0
 	e.Type = "Program"
 	e.Left = nil
@@ -22,10 +20,8 @@ func newProgramNode(expr *Expr) *Expr {
 	return e
 }
 
-func newAssignNode(expr *Expr) *Expr {
-	//fmt.Println("NewAssignExpr called", name)
-
-	e := new(Expr)
+func newAssignNode(name yySymType) *Node {
+	e := new(Node)
 	e.Kind = 0
 	e.Type = "="
 	e.Left = nil
@@ -33,10 +29,8 @@ func newAssignNode(expr *Expr) *Expr {
 	return e
 }
 
-func newIdentifierNode(expr *Expr) *Expr {
-	//fmt.Println("NewAssignExpr called", name)
-
-	e := new(Expr)
+func newIdentifierNode(name yySymType) *Node {
+	e := new(Node)
 	e.Kind = 0
 	e.Type = "Indentifier"
 	e.Left = nil
@@ -44,8 +38,8 @@ func newIdentifierNode(expr *Expr) *Expr {
 	return e
 }
 
-func newNumberNode(expr *Expr) *Expr {
-	e := new(Expr)
+func newNumberNode(name yySymType) *Node {
+	e := new(Node)
 	e.Kind = 0
 	e.Type = "Number"
 	e.Left = nil

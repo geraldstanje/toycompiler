@@ -4,7 +4,7 @@ package dsl
 
 %union {
   s string
-  expr *Expr
+  node *Node
 }
 
 %token WHILE
@@ -22,36 +22,36 @@ package dsl
 %%
 program: statement
 {
-  $$.expr = $1.expr
+  $$.node = $1.node
 }
 | statement END_LINE
 { 
-  $$.expr = $1.expr
+  $$.node = $1.node
 }
 | statement END_LINE program 
 { 
-  programNode := newProgramNode($2.expr)
-  programNode.Left = $1.expr
-  programNode.Right = $3.expr
+  programNode := newProgramNode($2)
+  programNode.Left = $1.node
+  programNode.Right = $3.node
 }
 
 statement: assignation 
 {
-  $$.expr = $1.expr
+  $$.node = $1.node
 }
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
-  identifierNode := newIdentifierNode($1.expr)
-  assignNode := newAssignNode($2.expr)
+  identifierNode := newIdentifierNode($1)
+  assignNode := newAssignNode($2)
   assignNode.Left = identifierNode
   // the expression is already a node, so we just assign it directly
-  assignNode.Right = $3.expr
+  assignNode.Right = $3.node
 }
 
 expression: NUMBER 
 { 
-  $$.expr = newNumberNode($1.expr)
+  $$.node = newNumberNode($1)
 }
 
 %%
