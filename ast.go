@@ -33,7 +33,7 @@ func NewAssignNode(kind int, name yySymType) (*Expr, error) {
 	return e, nil
 }
 
-func NewTokenNode(kind int, name yySymType) (*Expr, error) {
+func NewIdentifierNode(kind int, name yySymType) (*Expr, error) {
 	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
@@ -42,4 +42,10 @@ func NewTokenNode(kind int, name yySymType) (*Expr, error) {
 	e.Left = nil
 	e.Right = nil
 	return e, nil
+}
+
+// Walk down tree
+func (tree *Tree) Walk(level int) (*Tree, error) {
+
+
 }

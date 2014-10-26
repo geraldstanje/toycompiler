@@ -22,35 +22,36 @@ package dsl
 %%
 program: statement
 {
-  $$ = $1
+  $$.expr = $1.expr
 }
 | statement END_LINE
 { 
-  $$ = $1
+  $$.expr = $1.expr
 }
 | statement END_LINE program 
 { 
-  programNode = newProgramNode($2)
-  programNode.Left = $1
-  programNode.Right = $3
+  programNode = newProgramNode($2.expr)
+  programNode.Left = $1.expr
+  programNode.Right = $3.expr
 }
 
-statement: assignation {
-  $$ = $1
+statement: assignation 
+{
+  $$.expr = $1.expr
 }
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
-  identifierNode = newIdentifierNode($1)
-  assignNode = newAssignNode($2)
+  identifierNode = newIdentifierNode($1.expr)
+  assignNode = newAssignNode($2.expr)
   assignNode.Left = identifierNode
   // the expression is already a node, so we just assign it directly
-  assignNode.Right = $3
+  assignNode.Right = $3.expr
 }
 
 expression: NUMBER 
 { 
-  $$ = newNumberNode($1)
+  $$.expr = newNumberNode($1.expr)
 }
 
 %%
