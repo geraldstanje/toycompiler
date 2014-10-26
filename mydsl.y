@@ -33,6 +33,7 @@ program: statement
   programNode := newProgramNode($2.expr)
   programNode.Left = $1.expr
   programNode.Right = $3.expr
+  $$ = programNode
 }
 
 statement: assignation 
