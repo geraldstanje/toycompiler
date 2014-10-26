@@ -23,7 +23,7 @@ func (d *MyDsl) InitAST(root *Node) {
 	}
 }
 
-// Walk traverses a tree depth-first
+// Walk traverses the AST in depth-first order
 func (d *MyDsl) Walk(n *Node) {
 	if n == nil {
 		return

@@ -46,8 +46,3 @@ func newNumberNode(name yySymType) *Node {
 	e.Right = nil
 	return e
 }
-
-// Walk down tree
-//func (tree *Tree) Walk(level int) (*Tree, error) {
-
-//}
