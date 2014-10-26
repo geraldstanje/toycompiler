@@ -1,7 +1,7 @@
 package dsl
 
 import (
-	//"fmt"
+	"fmt"
 	"log"
 	"os"
 	//"strings"
@@ -10,15 +10,15 @@ import (
 )
 
 type MyDsl struct {
-	expr []*Expr
+	ast []*Expr
 }
 
 func Create() (d *MyDsl) {
 	return &MyDsl{}
 }
 
-func (d *MyDsl) AppendNode(newExpr *Expr) {
-	d.expr = append(d.expr, newExpr)
+func (d *MyDsl) AppendExpr(newExpr *Expr) {
+	d.ast = append(d.ast, newExpr)
 }
 
 func (d *MyDsl) Init(filename string) {
@@ -28,4 +28,8 @@ func (d *MyDsl) Init(filename string) {
 	}
 
 	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = d }))
+
+	for _, node := range d.ast {
+		fmt.Println(node.Type)
+	}
 }

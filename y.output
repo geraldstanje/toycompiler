@@ -1,0 +1,89 @@
+
+state 0
+	$accept: .program $end 
+
+	IDENTIFIER  shift 4
+	.  error
+
+	program  goto 1
+	statement  goto 2
+	assignation  goto 3
+
+state 1
+	$accept:  program.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	program:  statement.    (1)
+	program:  statement.END_LINE 
+	program:  statement.END_LINE program 
+
+	END_LINE  shift 5
+	.  reduce 1 (src line 23)
+
+
+state 3
+	statement:  assignation.    (4)
+
+	.  reduce 4 (src line 33)
+
+
+state 4
+	assignation:  IDENTIFIER.ASSIGN expression 
+
+	ASSIGN  shift 6
+	.  error
+
+
+state 5
+	program:  statement END_LINE.    (2)
+	program:  statement END_LINE.program 
+
+	IDENTIFIER  shift 4
+	.  reduce 2 (src line 24)
+
+	program  goto 7
+	statement  goto 2
+	assignation  goto 3
+
+state 6
+	assignation:  IDENTIFIER ASSIGN.expression 
+
+	NUMBER  shift 9
+	.  error
+
+	expression  goto 8
+
+state 7
+	program:  statement END_LINE program.    (3)
+
+	.  reduce 3 (src line 28)
+
+
+state 8
+	assignation:  IDENTIFIER ASSIGN expression.    (5)
+
+	.  reduce 5 (src line 35)
+
+
+state 9
+	expression:  NUMBER.    (6)
+
+	.  reduce 6 (src line 40)
+
+
+15 terminals, 5 nonterminals
+7 grammar rules, 10/2000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+54 working sets used
+memory: parser 6/30000
+0 extra closures
+5 shift entries, 1 exceptions
+5 goto entries
+2 entries saved by goto default
+Optimizer space used: output 11/30000
+11 table entries, 2 zero
+maximum spread: 15, maximum offset: 15

@@ -21,15 +21,26 @@ package dsl
 %token IDENTIFIER
 %%
 program: statement
-       | statement END_LINE         
+       | statement END_LINE         { expr, err := NewProgramNode(1,$1)
+                                      if err != nil { panic(err); } 
+                                      cast(yylex).AppendExpr(expr)
+                                    }
        | statement END_LINE program { expr, err := NewProgramNode(1,$1)
                                       if err != nil { panic(err); } 
-                                      cast(yylex).AppendNode(expr)
+                                      cast(yylex).AppendExpr(expr)
                                     }
 
 statement: assignation
 
-assignation: IDENTIFIER ASSIGN NUMBER { /*var err error; if $$.expr, err = NewAssignExpr(1,$1); err != nil { panic(err); }*/ }
+assignation: IDENTIFIER ASSIGN expression { expr, err := NewAssignNode(1,$1)
+                                            if err != nil { panic(err); } 
+                                            cast(yylex).AppendExpr(expr)
+                                          }
+
+expression: NUMBER { expr, err := NewTokenNode(1,$1)
+                     if err != nil { panic(err); } 
+                     cast(yylex).AppendExpr(expr)
+                   }
 
 %%
 func cast(y yyLexer) *MyDsl { return y.(*Lexer).p }

@@ -1,7 +1,7 @@
 package dsl
 
 import (
-	"fmt"
+//"fmt"
 )
 
 type Expr struct {
@@ -12,20 +12,33 @@ type Expr struct {
 }
 
 func NewProgramNode(kind int, name yySymType) (*Expr, error) {
-	fmt.Println("NewProgramNode called", name)
+	//fmt.Println("NewProgramNode called", name)
 
 	e := new(Expr)
 	e.Kind = 0
+	e.Type = "Program"
 	e.Left = nil
 	e.Right = nil
 	return e, nil
 }
 
-func NewAssignExpr(kind int, name yySymType) (*Expr, error) {
-	fmt.Println("NewAssignExpr called", name)
+func NewAssignNode(kind int, name yySymType) (*Expr, error) {
+	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
 	e.Kind = 0
+	e.Type = "="
+	e.Left = nil
+	e.Right = nil
+	return e, nil
+}
+
+func NewTokenNode(kind int, name yySymType) (*Expr, error) {
+	//fmt.Println("NewAssignExpr called", name)
+
+	e := new(Expr)
+	e.Kind = 0
+	e.Type = "token"
 	e.Left = nil
 	e.Right = nil
 	return e, nil
