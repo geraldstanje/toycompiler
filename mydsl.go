@@ -14,7 +14,7 @@ type MyDsl struct {
 }
 
 func Create() (d *MyDsl) {
-	return &MyDsl{}
+	return &MyDsl{ast: nil}
 }
 
 func (d *MyDsl) InitAST(root *Node) {
@@ -25,12 +25,12 @@ func (d *MyDsl) InitAST(root *Node) {
 
 // Walk traverses a tree depth-first
 func (d *MyDsl) Walk(n *Node) {
-  if n == nil {
-    return
-  }
-  d.Walk(t.Left)
-  fmt.Println(n.Type)
-  d.Walk(t.Right)
+	if n == nil {
+		return
+	}
+	d.Walk(n.Left)
+	fmt.Println(n.Type)
+	d.Walk(n.Right)
 }
 
 func (d *MyDsl) Init(filename string) {
@@ -41,8 +41,5 @@ func (d *MyDsl) Init(filename string) {
 
 	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = d }))
 
-	fmt.Println(d.ast.Type)
-	//for _, node := range d.ast {
-	//	fmt.Println(node.Type)
-	//}
+	d.Walk(d.ast)
 }
