@@ -11,7 +11,7 @@ type Expr struct {
 	Right *Expr
 }
 
-func newProgramNode(expr yySymType) *Expr {
+func newProgramNode(expr *Expr) *Expr {
 	//fmt.Println("NewProgramNode called", name)
 
 	e := new(Expr)
@@ -22,7 +22,7 @@ func newProgramNode(expr yySymType) *Expr {
 	return e
 }
 
-func newAssignNode(expr yySymType) *Expr {
+func newAssignNode(expr *Expr) *Expr {
 	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
@@ -33,12 +33,21 @@ func newAssignNode(expr yySymType) *Expr {
 	return e
 }
 
-func newIdentifierNode(expr yySymType) *Expr {
+func newIdentifierNode(expr *Expr) *Expr {
 	//fmt.Println("NewAssignExpr called", name)
 
 	e := new(Expr)
 	e.Kind = 0
 	e.Type = "Indentifier"
+	e.Left = nil
+	e.Right = nil
+	return e
+}
+
+func newNumberNode(expr *Expr) *Expr {
+	e := new(Expr)
+	e.Kind = 0
+	e.Type = "Number"
 	e.Left = nil
 	e.Right = nil
 	return e
