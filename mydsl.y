@@ -21,26 +21,37 @@ package dsl
 %token IDENTIFIER
 %%
 program: statement
-       | statement END_LINE         { expr, err := NewProgramNode(1,$1)
-                                      if err != nil { panic(err); } 
-                                      cast(yylex).AppendExpr(expr)
-                                    }
-       | statement END_LINE program { expr, err := NewProgramNode(1,$1)
-                                      if err != nil { panic(err); } 
-                                      cast(yylex).AppendExpr(expr)
-                                    }
+{
+  $$ = $1
+}
+| statement END_LINE
+{ 
+  $$ = $1
+}
+| statement END_LINE program 
+{ 
+  programNode = newProgramNode($2)
+  programNode.Left = $1
+  programNode.Right = $3
+}
 
-statement: assignation
+statement: assignation {
+  $$ = $1
+}
 
-assignation: IDENTIFIER ASSIGN expression { expr, err := NewAssignNode(1,$1)
-                                            if err != nil { panic(err); } 
-                                            cast(yylex).AppendExpr(expr)
-                                          }
+assignation: IDENTIFIER ASSIGN expression 
+{   
+  identifierNode = newIdentifierNode($1)
+  assignNode = newAssignNode($2)
+  assignNode.Left = identifierNode
+  // the expression is already a node, so we just assign it directly
+  assignNode.Right = $3
+}
 
-expression: NUMBER { expr, err := NewTokenNode(1,$1)
-                     if err != nil { panic(err); } 
-                     cast(yylex).AppendExpr(expr)
-                   }
+expression: NUMBER 
+{ 
+  $$ = newNumberNode($1)
+}
 
 %%
 func cast(y yyLexer) *MyDsl { return y.(*Lexer).p }
