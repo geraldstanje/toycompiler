@@ -30,7 +30,7 @@ program: statement
 }
 | statement END_LINE program 
 { 
-  programNode = newProgramNode($2.expr)
+  programNode := newProgramNode($2.expr)
   programNode.Left = $1.expr
   programNode.Right = $3.expr
 }
@@ -42,8 +42,8 @@ statement: assignation
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
-  identifierNode = newIdentifierNode($1.expr)
-  assignNode = newAssignNode($2.expr)
+  identifierNode := newIdentifierNode($1.expr)
+  assignNode := newAssignNode($2.expr)
   assignNode.Left = identifierNode
   // the expression is already a node, so we just assign it directly
   assignNode.Right = $3.expr
