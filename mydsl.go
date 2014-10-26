@@ -1,7 +1,7 @@
 package dsl
 
 import (
-	"fmt"
+	//"fmt"
 	"log"
 	"os"
 	//"strings"
@@ -10,14 +10,15 @@ import (
 )
 
 type MyDsl struct {
-}
-
-func (d *MyDsl) BeginForm(line string) {
-	fmt.Println("BeginForm called", line)
+	expr []*Expr
 }
 
 func Create() (d *MyDsl) {
 	return &MyDsl{}
+}
+
+func (d *MyDsl) AppendNode(newExpr *Expr) {
+	d.expr = append(d.expr, newExpr)
 }
 
 func (d *MyDsl) Init(filename string) {

@@ -4,7 +4,7 @@ package dsl
 
 %union {
   s string
-  expr *Expr
+  //expr *Expr
 }
 
 %token WHILE
@@ -22,7 +22,10 @@ package dsl
 %%
 program: statement
        | statement END_LINE         
-       | statement END_LINE program { var err error; if $$.expr, err = NewProgramNode(1,$1); err != nil { panic(err); } }
+       | statement END_LINE program { expr, err := NewProgramNode(1,$1)
+                                      if err != nil { panic(err); } 
+                                      cast(yylex).AppendNode(expr)
+                                    }
 
 statement: assignation
 
