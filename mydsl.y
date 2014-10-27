@@ -34,7 +34,7 @@ program: statement
   programNode.Left = $1.node
   programNode.Right = $3.node
   $$.node = programNode
-  
+
   cast(yylex).InitAST($$.node)
 }
 
@@ -50,6 +50,8 @@ assignation: IDENTIFIER ASSIGN expression
   assignNode.Left = identifierNode
   // the expression is already a node, so we just assign it directly
   assignNode.Right = $3.node
+
+  $$.node = assignNode
 }
 
 expression: NUMBER 
