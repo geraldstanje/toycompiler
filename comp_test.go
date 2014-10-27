@@ -11,6 +11,7 @@ import (
 )
 
 func TestMyDsl(t *testing.T) {
-	d := Create()
-	d.Init("test.txt")
+	c := NewCompiler()
+	c.CreateAst("test.txt")
+	c.PlotAst("plot.pdf")
 }

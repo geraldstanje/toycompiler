@@ -25,24 +25,20 @@ program: statement
   $$.node = $1.node
 }
 | statement END_LINE
-{ 
-  //$$.node = $1.node 
-  
+{   
   programNode := newProgramNode($2)
   programNode.Left = $1.node
   programNode.Right = nil
   $$.node = programNode
-    
-  cast(yylex).InitAST($$.node)
 }
 | statement END_LINE program 
 {
   programNode := newProgramNode($2)
   programNode.Left = $1.node
-  programNode.Right = nil
-  $3.node.Right = programNode
-  
-  cast(yylex).InitAST($$.node)
+  programNode.Right = $3.node
+  $$.node = programNode
+
+  cast(yylex).SetAstRoot($$.node)
 }
 
 statement: assignation 
@@ -67,4 +63,4 @@ expression: NUMBER
 }
 
 %%
-func cast(y yyLexer) *MyDsl { return y.(*Lexer).p }
+func cast(y yyLexer) *Compiler { return y.(*Lexer).p }
