@@ -28,8 +28,8 @@ func (d *MyDsl) Walk(n *Node) {
 	if n == nil {
 		return
 	}
-	d.Walk(n.Left)
 	fmt.Println(n.Type)
+	d.Walk(n.Left)
 	d.Walk(n.Right)
 }
 
