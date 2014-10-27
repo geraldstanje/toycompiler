@@ -1,12 +1,8 @@
 package dsl
 
 import (
-	"fmt"
 	"log"
 	"os"
-	//"strings"
-	//"strconv"
-	//"strings"
 )
 
 type MyDsl struct {
@@ -23,16 +19,6 @@ func (d *MyDsl) InitAST(root *Node) {
 	}
 }
 
-// Walk traverses the AST in depth-first order
-func (d *MyDsl) Walk(n *Node) {
-	if n == nil {
-		return
-	}
-	fmt.Println(n.Type)
-	d.Walk(n.Left)
-	d.Walk(n.Right)
-}
-
 func (d *MyDsl) Init(filename string) {
 	file, err := os.Open("test.txt") // For read access.
 	if err != nil {
@@ -41,5 +27,6 @@ func (d *MyDsl) Init(filename string) {
 
 	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = d }))
 
-	d.Walk(d.ast)
+	Plot(d.ast, "plot.pdf")
+	Open("plot.pdf")
 }
