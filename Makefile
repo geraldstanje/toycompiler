@@ -8,4 +8,4 @@ all:
 test:
 	go test
 clean:
-	-rm *.output *.yacc.go *.nn.go *.pdf *.dot
+	-rm *.output *.yacc.go *.nn.go *.pdf *.dot compiled.txt

@@ -9,27 +9,32 @@ import (
 )
 
 var count int
+var blockNb int
 
 type ItemType int
 
 // Types used in the Abstract Syntax Tree
 const (
 	Identifier ItemType = iota
-	Number
+	Token
 	Assignment
 	Program
+	Operator
+	While
+	Print
 )
 
 type Node struct {
 	Kind       ItemType
 	NodeId     int
 	Identifier string
-	Number     string
+	Token      string
+	Operator   string
 	Left       *Node
 	Right      *Node
 }
 
-func newProgramNode(lval yySymType) *Node {
+func newProgramNode() *Node {
 	e := new(Node)
 	e.Kind = Program
 	e.NodeId = count
@@ -60,11 +65,42 @@ func newIdentifierNode(lval yySymType) *Node {
 	return e
 }
 
-func newNumberNode(lval yySymType) *Node {
+func newTokenNode(lval yySymType) *Node {
 	e := new(Node)
-	e.Kind = Number
+	e.Kind = Token
 	e.NodeId = count
-	e.Number = lval.s
+	e.Token = lval.s
+	e.Left = nil
+	e.Right = nil
+	count++
+	return e
+}
+
+func newOpNode(lval yySymType) *Node {
+	e := new(Node)
+	e.Kind = Operator
+	e.NodeId = count
+	e.Operator = lval.s
+	e.Left = nil
+	e.Right = nil
+	count++
+	return e
+}
+
+func newWhileNode() *Node {
+	e := new(Node)
+	e.Kind = While
+	e.NodeId = count
+	e.Left = nil
+	e.Right = nil
+	count++
+	return e
+}
+
+func newPrintNode() *Node {
+	e := new(Node)
+	e.Kind = Print
+	e.NodeId = count
 	e.Left = nil
 	e.Right = nil
 	count++
@@ -79,11 +115,20 @@ func CreateLabel(T *Node) string {
 	case Identifier:
 		return T.Identifier
 
-	case Number:
-		return T.Number
+	case Token:
+		return T.Token
 
 	case Assignment:
 		return "="
+
+	case Operator:
+		return T.Operator
+
+	case Print:
+		return "Print"
+
+	case While:
+		return "While"
 
 	default:
 		return ""
@@ -126,7 +171,7 @@ func scan(T *Node, edges *[]string, labels *[]string) {
 }
 
 // Convert converts the tree into DOT format
-func convert(T *Node, outputfile string) {
+func generateDotFormat(T *Node, outputfile string) {
 	file, err := os.Create(outputfile)
 	defer file.Close()
 	if err != nil {
@@ -145,9 +190,10 @@ func convert(T *Node, outputfile string) {
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
 func Plot(T *Node, outputfile string) {
-	convert(T, "output.dot")
+	generateDotFormat(T, "output.dot")
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
+	// windows: cmd := exec.Command("cmd", "/C", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
 	cmd := exec.Command("sh", "-c", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
 	er := cmd.Run()
 	if er != nil {
@@ -158,6 +204,7 @@ func Plot(T *Node, outputfile string) {
 func Open(outputfile string) {
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
+	// windows: cmd := exec.Command("cmd", "/C start "+outputfile)
 	cmd := exec.Command("sh", "-c", "open "+outputfile)
 	er := cmd.Run()
 	if er != nil {
