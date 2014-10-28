@@ -14,16 +14,19 @@ type Compiler struct {
 	writer *bufio.Writer
 }
 
-func NewCompiler() (c *Compiler) {
+func NewCompiler() (*Compiler, error) {
 	comp := Compiler{}
 
-	file, _ := os.Create("compiled.txt")
-	writer := bufio.NewWriter(file)
+	file, err := os.Create("compiled.txt")
+	if err != nil {
+		return nil, err
+	}
 
+	writer := bufio.NewWriter(file)
 	comp.writer = bufio.NewWriter(writer)
 	comp.indent = 0
 	comp.ast = nil
-	return &comp
+	return &comp, nil
 }
 
 func (c *Compiler) SetAstRoot(root *Node) {

@@ -5,7 +5,10 @@ import (
 )
 
 func TestMyDsl(t *testing.T) {
-	c := NewCompiler()
+	c, err := NewCompiler()
+	if err != nil {
+		t.Fatal(err)
+	}
 	c.CreateAst("test.txt")
 	c.PlotAst("plot.pdf")
 	c.CompTopScope()
