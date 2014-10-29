@@ -17,7 +17,7 @@ type Compiler struct {
 func NewCompiler() (*Compiler, error) {
 	comp := Compiler{}
 
-	file, err := os.Create("compiled.txt")
+	file, err := os.Create("generated.txt")
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +33,8 @@ func (c *Compiler) SetAstRoot(root *Node) {
 	c.ast = root
 }
 
-func (c *Compiler) CreateAst(filename string) {
-	file, err := os.Open("test.txt")
+func (c *Compiler) Parse(filename string) {
+	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}

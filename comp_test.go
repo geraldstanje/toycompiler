@@ -9,7 +9,7 @@ func TestMyDsl(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.CreateAst("test.txt")
+	c.Parse("test.txt")
 	c.PlotAst("plot.pdf")
 	c.CompTopScope()
 }
