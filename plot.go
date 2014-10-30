@@ -40,38 +40,38 @@ func createLabel(node Node) string {
 }
 
 // Scan scans all nodes in the tree recursively
-func scan(T Node, edges *[]string, labels *[]string) {
-	if T == nil {
+func scan(node Node, edges *[]string, labels *[]string) {
+	if node == nil {
 		return
 	}
-	if T.Left() != nil {
-		edge1 := intToString(T.NodeId())
-		edge2 := intToString(T.Left().NodeId())
+	if node.Left() != nil {
+		edge1 := intToString(node.NodeId())
+		edge2 := intToString(node.Left().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
-		label := "\t" + edge1 + " [label=\"" + createLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + createLabel(T.Left()) + "\"];"
+		label := "\t" + edge1 + " [label=\"" + createLabel(node) + "\"];" + "\n"
+		label += "\t" + edge2 + " [label=\"" + createLabel(node.Left()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
-	if T.Right() != nil {
-		edge1 := intToString(T.NodeId())
-		edge2 := intToString(T.Right().NodeId())
+	if node.Right() != nil {
+		edge1 := intToString(node.NodeId())
+		edge2 := intToString(node.Right().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
-		label := "\t" + edge1 + " [label=\"" + createLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + createLabel(T.Right()) + "\"];"
+		label := "\t" + edge1 + " [label=\"" + createLabel(node) + "\"];" + "\n"
+		label += "\t" + edge2 + " [label=\"" + createLabel(node.Right()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
-	scan(T.Left(), edges, labels)
-	scan(T.Right(), edges, labels)
+	scan(node.Left(), edges, labels)
+	scan(node.Right(), edges, labels)
 }
 
 // Convert converts the tree into DOT format
-func generateDotFormat(T Node, outputfile string) {
+func generateDotFormat(node Node, outputfile string) {
 	file, err := os.Create(outputfile)
 	defer file.Close()
 	if err != nil {
@@ -80,7 +80,7 @@ func generateDotFormat(T Node, outputfile string) {
 	result := "digraph G {" + "\n"
 	slice1 := []string{}
 	slice2 := []string{}
-	scan(T, &slice1, &slice2)
+	scan(node, &slice1, &slice2)
 	result += strings.Join(slice1, "\n")
 	result += "\n"
 	result += strings.Join(slice2, "\n")
@@ -89,8 +89,8 @@ func generateDotFormat(T Node, outputfile string) {
 }
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
-func plot(T Node, outputfile string) {
-	generateDotFormat(T, "output.dot")
+func plot(node Node, outputfile string) {
+	generateDotFormat(node, "output.dot")
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
 	// windows:
