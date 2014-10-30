@@ -9,7 +9,7 @@ import (
 )
 
 type Compiler struct {
-	ast    *Node
+	ast    Node
 	indent int
 	writer *bufio.Writer
 }
@@ -29,7 +29,7 @@ func NewCompiler() (*Compiler, error) {
 	return &comp, nil
 }
 
-func (c *Compiler) SetAstRoot(root *Node) {
+func (c *Compiler) SetAstRoot(root Node) {
 	c.ast = root
 }
 
@@ -65,56 +65,58 @@ func (c *Compiler) Deindent() {
 	}
 }
 
-func (c *Compiler) compNode(T *Node) {
-	if T == nil {
+func (c *Compiler) compNode(node Node) {
+	if node == nil {
 		return
 	}
 
-	switch T.Kind {
-	case Program:
-		c.compNode(T.Left)
-		c.compNode(T.Right)
+	switch n := node.(type) {
+	case *ProgramNode:
+		c.compNode(n.Left())
+		c.compNode(n.Right())
 
-	case Token:
-		c.EmitLine(fmt.Sprintf("PUSH %s", T.Token))
+	case *TokenNode:
+		c.EmitLine(fmt.Sprintf("PUSH %s", n.Token))
 
-	case Assignment:
-		left := T.Left
-		right := T.Right
+	case *AssignNode:
+		left := n.Left()
+		right := n.Right()
 
-		if right.Kind == Token {
-			c.EmitLine(fmt.Sprintf("PUSH %s", right.Token))
-		} else if right.Kind == Operator {
-			c.compNode(T.Right)
+		if tn, ok := right.(*TokenNode); ok {
+			c.EmitLine(fmt.Sprintf("PUSH %s", tn.Token))
+		} else if op, ok := right.(*OpNode); ok {
+			c.compNode(op.Right())
 		}
-		c.EmitLine(fmt.Sprintf("SET %s", left.Token))
+		if tn, ok := left.(*TokenNode); ok {
+			c.EmitLine(fmt.Sprintf("SET %s", tn.Token))
+		}
 
-	case Operator:
-		left := T.Left
-		right := T.Right
+	case *OpNode:
+		left := n.Left()
+		right := n.Right()
 
 		c.compNode(left)
 		c.compNode(right)
 
-		if T.Operator == "+" {
+		if n.Operator == "+" {
 			c.EmitLine("ADD")
-		} else if T.Operator == "-" {
+		} else if n.Operator == "-" {
 			c.EmitLine("SUB")
-		} else if T.Operator == "/" {
+		} else if n.Operator == "/" {
 			c.EmitLine("DIV")
-		} else if T.Operator == "*" {
+		} else if n.Operator == "*" {
 			c.EmitLine("MUL")
 		}
 
-	case Print:
-		left := T.Left
+	case *PrintNode:
+		left := n.Left()
 
 		c.compNode(left)
 		c.EmitLine("PRINT")
 
-	case While:
-		left := T.Left
-		right := T.Right
+	case *WhileNode:
+		left := n.Left()
+		right := n.Right()
 		blockNb = blockNb + 1
 
 		c.EmitLine(fmt.Sprintf("JMP cond%d", blockNb))

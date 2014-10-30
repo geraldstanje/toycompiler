@@ -1,6 +1,7 @@
 package dsl
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -11,127 +12,137 @@ import (
 var count int
 var blockNb int
 
-type ItemType int
-
-// Types used in the Abstract Syntax Tree
-const (
-	Identifier ItemType = iota
-	Token
-	Assignment
-	Program
-	Operator
-	While
-	Print
-)
-
-type Node struct {
-	Kind       ItemType
-	NodeId     int
-	Identifier string
-	Token      string
-	Operator   string
-	Left       *Node
-	Right      *Node
+type Node interface {
+	NodeId() int
+	Left() Node
+	Right() Node
 }
 
-func newProgramNode() *Node {
-	e := new(Node)
-	e.Kind = Program
-	e.NodeId = count
-	e.Left = nil
-	e.Right = nil
+type BasicNode struct {
+	BasicNodeId int
+	left        Node
+	right       Node
+}
+
+func (b BasicNode) NodeId() int {
+	return b.BasicNodeId
+}
+
+func (b BasicNode) Left() Node {
+	return b.left
+}
+
+func (b BasicNode) Right() Node {
+	return b.right
+}
+
+type ProgramNode struct {
+	BasicNode
+}
+
+type AssignNode struct {
+	BasicNode
+}
+
+type TokenNode struct {
+	BasicNode
+	Token string
+}
+
+type OpNode struct {
+	BasicNode
+	Operator string
+}
+
+type WhileNode struct {
+	BasicNode
+}
+
+type PrintNode struct {
+	BasicNode
+}
+
+func newProgramNode(l Node, r Node) Node {
+	if r != nil {
+		e := &ProgramNode{
+			BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+		}
+		count++
+		return e
+	}
+
+	e := &ProgramNode{
+		BasicNode: BasicNode{BasicNodeId: count, left: l},
+	}
 	count++
 	return e
 }
 
-func newAssignNode(lval yySymType) *Node {
-	e := new(Node)
-	e.Kind = Assignment
-	e.NodeId = count
-	e.Left = nil
-	e.Right = nil
+func newAssignNode(l Node, r Node) Node {
+	e := &AssignNode{
+		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+	}
 	count++
 	return e
 }
 
-func newIdentifierNode(lval yySymType) *Node {
-	e := new(Node)
-	e.Kind = Identifier
-	e.NodeId = count
-	e.Identifier = lval.s
-	e.Left = nil
-	e.Right = nil
+func newTokenNode(str string) Node {
+	e := &TokenNode{
+		BasicNode: BasicNode{BasicNodeId: count},
+		Token:     str,
+	}
 	count++
 	return e
 }
 
-func newTokenNode(lval yySymType) *Node {
-	e := new(Node)
-	e.Kind = Token
-	e.NodeId = count
-	e.Token = lval.s
-	e.Left = nil
-	e.Right = nil
+func newOpNode(str string, l Node, r Node) Node {
+	e := &OpNode{
+		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+		Operator:  str,
+	}
 	count++
 	return e
 }
 
-func newOpNode(lval yySymType) *Node {
-	e := new(Node)
-	e.Kind = Operator
-	e.NodeId = count
-	e.Operator = lval.s
-	e.Left = nil
-	e.Right = nil
+func newWhileNode(l Node, r Node) Node {
+	e := &WhileNode{
+		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+	}
 	count++
 	return e
 }
 
-func newWhileNode() *Node {
-	e := new(Node)
-	e.Kind = While
-	e.NodeId = count
-	e.Left = nil
-	e.Right = nil
+func newPrintNode(l Node) Node {
+	e := &PrintNode{
+		BasicNode: BasicNode{BasicNodeId: count, left: l},
+	}
 	count++
 	return e
 }
 
-func newPrintNode() *Node {
-	e := new(Node)
-	e.Kind = Print
-	e.NodeId = count
-	e.Left = nil
-	e.Right = nil
-	count++
-	return e
-}
-
-func CreateLabel(T *Node) string {
-	switch T.Kind {
-	case Program:
+func CreateLabel(node Node) string {
+	switch n := node.(type) {
+	case *ProgramNode:
 		return "Program"
 
-	case Identifier:
-		return T.Identifier
+	case *TokenNode:
+		return n.Token
 
-	case Token:
-		return T.Token
-
-	case Assignment:
+	case *AssignNode:
 		return "="
 
-	case Operator:
-		return T.Operator
+	case *OpNode:
+		return n.Operator
 
-	case Print:
+	case *PrintNode:
 		return "Print"
 
-	case While:
+	case *WhileNode:
 		return "While"
 
 	default:
-		return ""
+		fmt.Printf("ast.Walk: unexpected node type %T", n)
+		panic("ast.Walk")
 	}
 }
 
@@ -140,38 +151,38 @@ func IntToString(value int) string {
 }
 
 // Scan scans all nodes in the tree recursively
-func scan(T *Node, edges *[]string, labels *[]string) {
+func scan(T Node, edges *[]string, labels *[]string) {
 	if T == nil {
 		return
 	}
-	if T.Left != nil {
-		edge1 := IntToString(T.NodeId)
-		edge2 := IntToString(T.Left.NodeId)
+	if T.Left() != nil {
+		edge1 := IntToString(T.NodeId())
+		edge2 := IntToString(T.Left().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
 		label := "\t" + edge1 + " [label=\"" + CreateLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Left) + "\"];"
+		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Left()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
-	if T.Right != nil {
-		edge1 := IntToString(T.NodeId)
-		edge2 := IntToString(T.Right.NodeId)
+	if T.Right() != nil {
+		edge1 := IntToString(T.NodeId())
+		edge2 := IntToString(T.Right().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
 		label := "\t" + edge1 + " [label=\"" + CreateLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Right) + "\"];"
+		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Right()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
-	scan(T.Left, edges, labels)
-	scan(T.Right, edges, labels)
+	scan(T.Left(), edges, labels)
+	scan(T.Right(), edges, labels)
 }
 
 // Convert converts the tree into DOT format
-func generateDotFormat(T *Node, outputfile string) {
+func generateDotFormat(T Node, outputfile string) {
 	file, err := os.Create(outputfile)
 	defer file.Close()
 	if err != nil {
@@ -189,11 +200,12 @@ func generateDotFormat(T *Node, outputfile string) {
 }
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
-func Plot(T *Node, outputfile string) {
+func Plot(T Node, outputfile string) {
 	generateDotFormat(T, "output.dot")
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
-	// windows: cmd := exec.Command("cmd", "/C", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
+	// windows:
+	//cmd := exec.Command("cmd", "/C", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
 	cmd := exec.Command("sh", "-c", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
 	er := cmd.Run()
 	if er != nil {
@@ -204,7 +216,8 @@ func Plot(T *Node, outputfile string) {
 func Open(outputfile string) {
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
-	// windows: cmd := exec.Command("cmd", "/C start "+outputfile)
+	// windows:
+	//cmd := exec.Command("cmd", "/C start "+outputfile)
 	cmd := exec.Command("sh", "-c", "open "+outputfile)
 	er := cmd.Run()
 	if er != nil {

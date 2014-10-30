@@ -4,7 +4,7 @@ package dsl
 
 %union {
   s string
-  node *Node
+  node Node
 }
 
 %token WHILE
@@ -26,19 +26,16 @@ program: statement
 }
 | statement END_LINE
 {   
-  programNode := newProgramNode()
-  programNode.Left = $1.node
+  programNode := newProgramNode($1.node, nil)
   $$.node = programNode
-  
+
   cast(yylex).SetAstRoot($$.node)
 }
 | statement END_LINE program 
 {
-  programNode := newProgramNode()
-  programNode.Left = $1.node
-  programNode.Right = $3.node
+  programNode := newProgramNode($1.node, $3.node)
   $$.node = programNode
-  
+
   cast(yylex).SetAstRoot($$.node)
 }
 
@@ -52,56 +49,45 @@ statement: assignation
 }
 | PRINT expression
 {
-  printNode := newPrintNode()
-  printNode.Left = $2.node
+  printNode := newPrintNode($2.node)
   $$.node = printNode
 }
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
-  tokenNode := newTokenNode($1)
-  assignNode := newAssignNode($2)
-  assignNode.Left = tokenNode
-  // the expression is already a node, so we just assign it directly
-  assignNode.Right = $3.node
+  tokenNode := newTokenNode($1.s)
+  assignNode := newAssignNode(tokenNode, $3.node) // assign.Right = $3.node ... the expression is already a node, so we just assign it directly
   $$.node = assignNode
 }
 
 structure: WHILE expression BEGIN_BLOCK program END_BLOCK
 {
-   whileNode := newWhileNode()
-   whileNode.Left = $2.node
-   whileNode.Right = $4.node
+   whileNode := newWhileNode($2.node, $4.node)
    $$.node = whileNode
 }
 
 expression: NUMBER 
 { 
-  $$.node = newTokenNode($1)
+  $$.node = newTokenNode($1.s)
 }
 | BEGIN_EXPRESSION expression END_EXPRESSION
 {
-  programNode := newProgramNode()
-  programNode.Left = $2.node
+  programNode := newProgramNode($2.node, nil)
   $$.node = programNode
 }
 | expression ADD_OP expression
 {
-  opNode := newOpNode($2)
-  opNode.Left = $1.node
-  opNode.Right = $3.node
+  opNode := newOpNode($2.s, $1.node, $3.node)
   $$.node = opNode
 }
 | expression MUL_OP expression
 {
-  opNode := newOpNode($2)
-  opNode.Left = $1.node
-  opNode.Right = $3.node
+  opNode := newOpNode($2.s, $1.node, $3.node)
   $$.node = opNode
 }
 | IDENTIFIER
 {
-  $$.node = newTokenNode($1)
+  $$.node = newTokenNode($1.s)
 }
                
 %%
