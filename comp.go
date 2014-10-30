@@ -84,8 +84,8 @@ func (c *Compiler) compNode(node Node) {
 
 		if tn, ok := right.(*TokenNode); ok {
 			c.EmitLine(fmt.Sprintf("PUSH %s", tn.Token))
-		} else if op, ok := right.(*OpNode); ok {
-			c.compNode(op.Right())
+		} else if _, ok := right.(*OpNode); ok {
+			c.compNode(n.Right())
 		}
 		if tn, ok := left.(*TokenNode); ok {
 			c.EmitLine(fmt.Sprintf("SET %s", tn.Token))
