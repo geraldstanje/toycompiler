@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-func IntToString(value int) string {
+func intToString(value int) string {
 	return strconv.Itoa(value)
 }
 
-func CreateLabel(node Node) string {
+func createLabel(node Node) string {
 	switch n := node.(type) {
 	case *ProgramNode:
 		return "Program"
@@ -45,23 +45,23 @@ func scan(T Node, edges *[]string, labels *[]string) {
 		return
 	}
 	if T.Left() != nil {
-		edge1 := IntToString(T.NodeId())
-		edge2 := IntToString(T.Left().NodeId())
+		edge1 := intToString(T.NodeId())
+		edge2 := intToString(T.Left().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
-		label := "\t" + edge1 + " [label=\"" + CreateLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Left()) + "\"];"
+		label := "\t" + edge1 + " [label=\"" + createLabel(T) + "\"];" + "\n"
+		label += "\t" + edge2 + " [label=\"" + createLabel(T.Left()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
 	if T.Right() != nil {
-		edge1 := IntToString(T.NodeId())
-		edge2 := IntToString(T.Right().NodeId())
+		edge1 := intToString(T.NodeId())
+		edge2 := intToString(T.Right().NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
-		label := "\t" + edge1 + " [label=\"" + CreateLabel(T) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + CreateLabel(T.Right()) + "\"];"
+		label := "\t" + edge1 + " [label=\"" + createLabel(T) + "\"];" + "\n"
+		label += "\t" + edge2 + " [label=\"" + createLabel(T.Right()) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
@@ -89,7 +89,7 @@ func generateDotFormat(T Node, outputfile string) {
 }
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
-func Plot(T Node, outputfile string) {
+func plot(T Node, outputfile string) {
 	generateDotFormat(T, "output.dot")
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
@@ -102,7 +102,7 @@ func Plot(T Node, outputfile string) {
 	}
 }
 
-func Open(outputfile string) {
+func open(outputfile string) {
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
 	// windows:

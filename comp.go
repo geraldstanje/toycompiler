@@ -43,8 +43,8 @@ func (c *Compiler) Parse(filename string) {
 }
 
 func (c *Compiler) PlotAst(filename string) {
-	Plot(c.ast, filename)
-	Open(filename)
+	plot(c.ast, filename)
+	open(filename)
 }
 
 func (c *Compiler) EmitLine(line string) {
