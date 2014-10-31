@@ -15,15 +15,15 @@ type BasicNode struct {
 	right       Node
 }
 
-func (b BasicNode) NodeId() int {
+func (b *BasicNode) NodeId() int {
 	return b.BasicNodeId
 }
 
-func (b BasicNode) Left() Node {
+func (b *BasicNode) Left() Node {
 	return b.left
 }
 
-func (b BasicNode) Right() Node {
+func (b *BasicNode) Right() Node {
 	return b.right
 }
 
