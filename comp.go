@@ -11,21 +11,20 @@ import (
 type Compiler struct {
 	ast    Node
 	indent int
+	file   *os.File
 	writer *bufio.Writer
 }
 
 func NewCompiler() (*Compiler, error) {
 	comp := Compiler{}
 
-	file, err := os.Create("generated.txt")
+	var err error
+	comp.file, err = os.Create("generated.txt")
 	if err != nil {
 		return nil, err
 	}
 
-	writer := bufio.NewWriter(file)
-	comp.writer = bufio.NewWriter(writer)
-	comp.indent = 0
-	comp.ast = nil
+	comp.writer = bufio.NewWriter(comp.file)
 	return &comp, nil
 }
 
@@ -142,4 +141,5 @@ func (c *Compiler) compNode(node Node) {
 func (c *Compiler) CompTopScope() {
 	c.compNode(c.ast)
 	c.writer.Flush()
+	c.file.Close()
 }

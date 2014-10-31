@@ -85,7 +85,10 @@ func generateDotFormat(node Node, outputfile string) {
 	result += "\n"
 	result += strings.Join(slice2, "\n")
 	result += "\n}"
-	file.WriteString(result)
+	_, err = file.WriteString(result)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
