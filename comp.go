@@ -40,8 +40,8 @@ func (c *Compiler) Parse(filename string) {
 	}
 
 	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = c }))
-  // nex creates the function: func NewLexerWithInit(in io.Reader, initFun func(*Lexer)) *Lexer
-  // go tool yacc creates the function: func yyParse(yylex yyLexer) int
+	// nex creates the function: func NewLexerWithInit(in io.Reader, initFun func(*Lexer)) *Lexer
+	// go tool yacc creates the function: func yyParse(yylex yyLexer) int
 }
 
 func (c *Compiler) PlotAst(filename string) {
