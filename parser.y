@@ -4,7 +4,6 @@ package dsl
 
 %union {
   s string
-  lineno int
   node Node
 }
 
