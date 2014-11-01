@@ -18,5 +18,5 @@ import "fmt"
 var lineno int
 
 func (yylex Lexer) Error(e string) {
-  yylex.p.err = fmt.Sprintf("Syntax error in line %d: %s", lineno+1, yylex.Text())
+  yylex.p.err = fmt.Sprintf(":%d: error: '%s' was not declared", lineno+1, yylex.Text())
 }

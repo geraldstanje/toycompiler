@@ -43,7 +43,7 @@ func (c *Compiler) Parse(filename string) error {
 	// go tool yacc creates the function: func yyParse(yylex yyLexer) int
 
 	if ret == 1 {
-		return fmt.Errorf(c.err)
+		return fmt.Errorf(filename + c.err)
 	}
 
 	return nil
