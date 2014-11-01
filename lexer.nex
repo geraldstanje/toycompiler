@@ -10,6 +10,13 @@
 /\}/              { return END_BLOCK }
 /[0-9]+/          { lval.s = yylex.Text(); return NUMBER }
 /[a-z][a-z0-9]*/  { lval.s = yylex.Text(); return IDENTIFIER }
+/\n+/             { lineno += len(yylex.Text()) }
 //
 package dsl
+import "fmt"
 
+var lineno int
+
+func (yylex Lexer) Error(e string) {
+  yylex.p.err = fmt.Sprintf("Syntax error in line %d", lineno+1)
+}

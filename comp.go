@@ -9,6 +9,7 @@ import (
 )
 
 type Compiler struct {
+	err    string
 	ast    Node
 	indent int
 	file   *os.File
@@ -32,15 +33,21 @@ func (c *Compiler) SetAstRoot(root Node) {
 	c.ast = root
 }
 
-func (c *Compiler) Parse(filename string) {
+func (c *Compiler) Parse(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = c }))
+	ret := yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = c }))
 	// nex creates the function: func NewLexerWithInit(in io.Reader, initFun func(*Lexer)) *Lexer
 	// go tool yacc creates the function: func yyParse(yylex yyLexer) int
+
+	if ret == 1 {
+		return fmt.Errorf(c.err)
+	}
+
+	return nil
 }
 
 func (c *Compiler) PlotAst(filename string) {
