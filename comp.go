@@ -3,7 +3,6 @@ package dsl
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -36,7 +35,7 @@ func (c *Compiler) SetAstRoot(root Node) {
 func (c *Compiler) Parse(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	ret := yyParse(NewLexerWithInit(file, func(y *Lexer) { y.p = c }))
