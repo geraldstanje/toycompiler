@@ -13,6 +13,9 @@ func TestMyDsl(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.PlotAst("plot.pdf")
+	err = c.PlotAst("plot.pdf")
+	if err != nil {
+		t.Fatal(err)
+	}
 	c.CompTopScope()
 }

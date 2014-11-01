@@ -2,7 +2,6 @@ package dsl
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -71,11 +70,11 @@ func scan(node Node, edges *[]string, labels *[]string) {
 }
 
 // Convert converts the tree into DOT format
-func generateDotFormat(node Node, outputfile string) {
+func generateDotFormat(node Node, outputfile string) error {
 	file, err := os.Create(outputfile)
 	defer file.Close()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	result := "digraph G {" + "\n"
 	slice1 := []string{}
@@ -86,33 +85,30 @@ func generateDotFormat(node Node, outputfile string) {
 	result += strings.Join(slice2, "\n")
 	result += "\n}"
 	_, err = file.WriteString(result)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }
 
 // Plot plots the AST into SVG format, therefor converts the DOT format to SVG format
-func plot(node Node, outputfile string) {
-	generateDotFormat(node, "output.dot")
+func plot(node Node, outputfile string) error {
+	err := generateDotFormat(node, "output.dot")
+	if err != nil {
+		return err
+	}
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
 	// windows:
 	//cmd := exec.Command("cmd", "/C", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
 	cmd := exec.Command("sh", "-c", "dot -Tpdf "+"output.dot"+" -o "+outputfile)
-	er := cmd.Run()
-	if er != nil {
-		log.Fatal(er)
-	}
+	err = cmd.Run()
+	return err
 }
 
-func open(outputfile string) {
+func open(outputfile string) error {
 	// func Command(name string, arg ...string) *Cmd
 	// Command returns the Cmd struct to execute the named program with the given arguments.
 	// windows:
 	//cmd := exec.Command("cmd", "/C start "+outputfile)
 	cmd := exec.Command("sh", "-c", "open "+outputfile)
-	er := cmd.Run()
-	if er != nil {
-		log.Fatal(er)
-	}
+	err := cmd.Run()
+	return err
 }

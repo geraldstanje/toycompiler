@@ -49,9 +49,13 @@ func (c *Compiler) Parse(filename string) error {
 	return nil
 }
 
-func (c *Compiler) PlotAst(filename string) {
-	plot(c.ast, filename)
-	open(filename)
+func (c *Compiler) PlotAst(filename string) error {
+	err := plot(c.ast, filename)
+	if err != nil {
+		return err
+	}
+	err = open(filename)
+	return err
 }
 
 func (c *Compiler) EmitLine(line string) {
