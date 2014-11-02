@@ -14,10 +14,10 @@ The compiler uses:
 
 To try the release you'll need:
 
-  * OSX
-  * Go >= 1.3
-  * Graphviz: brew install graphviz
-  * [Nex](https://github.com/blynn/nex):
+* OSX
+* Go >= 1.3
+* Graphviz: $ brew install graphviz
+* [Nex](https://github.com/blynn/nex):
 
   After the requirements are satisfied:
 
