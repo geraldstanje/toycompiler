@@ -14,7 +14,7 @@ The compiler uses:
 
 To try the release you'll need:
 
-* OSX
+* OSX 10.7 (Lion) or greater, x86 and x86-64
 * Go >= 1.3
 * Graphviz: brew install graphviz
 * Nex: https://github.com/blynn/nex/
