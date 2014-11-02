@@ -7,8 +7,8 @@ This project ports the following compiler from Python to Go:
 
 The compiler uses:
 
-- [Nex lexer](https://crypto.stanford.edu/~blynn/nex/):
-- [Yacc parser generator](https://golang.org/cmd/yacc/):
+- Nex lexer: https://crypto.stanford.edu/~blynn/nex/
+- Yacc parser generator: https://golang.org/cmd/yacc/
 
 ## Installation:
 
@@ -16,9 +16,9 @@ To try the release you'll need:
 
 * OSX
 * Go >= 1.3
-* Graphviz: $ brew install graphviz
-* [Nex](https://github.com/blynn/nex):
+* Graphviz: brew install graphviz
+* Nex: https://github.com/blynn/nex/
 
-  After the requirements are satisfied:
+After the requirements are satisfied:
 
-    go get github.com/geraldstanje/toycompiler
+  go get github.com/geraldstanje/toycompiler
