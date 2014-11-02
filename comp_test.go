@@ -5,11 +5,8 @@ import (
 )
 
 func TestMyDsl(t *testing.T) {
-	c, err := NewCompiler()
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = c.Parse("test.txt")
+	c := NewCompiler()
+	err := c.Parse("test.txt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -17,5 +14,8 @@ func TestMyDsl(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.CompTopScope()
+	err = c.CompTopScope()
+	if err != nil {
+		t.Fatal(err)
+	}
 }

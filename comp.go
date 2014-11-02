@@ -11,21 +11,11 @@ type Compiler struct {
 	err    string
 	ast    Node
 	indent int
-	file   *os.File
 	writer *bufio.Writer
 }
 
-func NewCompiler() (*Compiler, error) {
-	comp := Compiler{}
-
-	var err error
-	comp.file, err = os.Create("generated.txt")
-	if err != nil {
-		return nil, err
-	}
-
-	comp.writer = bufio.NewWriter(comp.file)
-	return &comp, nil
+func NewCompiler() *Compiler {
+	return &Compiler{}
 }
 
 func (c *Compiler) SetAstRoot(root Node) {
@@ -148,8 +138,15 @@ func (c *Compiler) compNode(node Node) {
 	return
 }
 
-func (c *Compiler) CompTopScope() {
+func (c *Compiler) CompTopScope() error {
+	file, err := os.Create("generated.txt")
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+	c.writer = bufio.NewWriter(file)
+
 	c.compNode(c.ast)
 	c.writer.Flush()
-	c.file.Close()
+	return nil
 }
