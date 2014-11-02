@@ -11,6 +11,14 @@ The compiler uses:
 - Yacc parser generator: https://golang.org/cmd/yacc/
 
 ## Installation:
-- Install Nex: https://github.com/blynn/nex
-- Install Graphviz:
-  on OSX: brew install graphviz 
+
+To try the release you'll need:
+
+  * OSX
+  * Go >= 1.3
+  * Nex: https://github.com/blynn/nex
+  * Graphviz: brew install graphviz
+
+  After the requirements are satisfied:
+
+    go get github.com/geraldstanje/toycompiler
