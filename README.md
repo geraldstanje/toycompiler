@@ -9,3 +9,8 @@ The compiler uses:
 
 - Nex lexer: https://crypto.stanford.edu/~blynn/nex/
 - Yacc parser generator: https://golang.org/cmd/yacc/
+
+## Installation:
+- Install Nex: https://github.com/blynn/nex
+- Install Graphviz:
+  on OSX: brew install graphviz 
