@@ -147,6 +147,7 @@ func (c *Compiler) CompTopScope() error {
 	c.writer = bufio.NewWriter(file)
 
 	c.compNode(c.ast)
+  
 	c.writer.Flush()
 	return nil
 }
