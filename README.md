@@ -16,8 +16,8 @@ To try the release you'll need:
 
   * OSX
   * Go >= 1.3
-  * [Nex](https://github.com/blynn/nex):
   * Graphviz: brew install graphviz
+  * [Nex](https://github.com/blynn/nex):
 
   After the requirements are satisfied:
 
