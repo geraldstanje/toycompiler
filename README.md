@@ -1,6 +1,6 @@
 # toycompiler
 
-## Objective:
+## Goal:
 
 This project ports the following compiler from Python to Go:
 http://www.dimitrifourny.com/2014/04/17/write-your-first-compiler/
