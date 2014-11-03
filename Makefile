@@ -7,9 +7,9 @@ all:
   ifeq ($(UNAME), Darwin)
 		printf '/NEX_END_OF_LEXER_STRUCT/i\np *Compiler\n.\nw\nq\n' | ed -s lexer.nn.go
   else ifeq ($(UNAME), Linux)
-    printf '/NEX_END_OF_LEXER_STRUCT/i\np *Compiler\n.\nw\nq\n' | ed -s lexer.nn.go
-  else
-    sed -i '/NEX_END_OF_LEXER_STRUCT/ip *Compiler' lexer.nn.go
+		printf '/NEX_END_OF_LEXER_STRUCT/i\np *Compiler\n.\nw\nq\n' | ed -s lexer.nn.go
+	else
+		sed -i '/NEX_END_OF_LEXER_STRUCT/ip *Compiler' lexer.nn.go
   endif
 	
 	go tool yacc -o=parser.yacc.go parser.y
