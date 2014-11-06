@@ -73,28 +73,28 @@ func (c *Compiler) compNode(node Node) {
 
 	switch n := node.(type) {
 	case *ProgramNode:
-		c.compNode(n.Left())
-		c.compNode(n.Right())
+		c.compNode(n.Front())
+		c.compNode(n.Next())
 
 	case *TokenNode:
 		c.EmitLine(fmt.Sprintf("PUSH %s", n.Token))
 
 	case *AssignNode:
-		left := n.Left()
-		right := n.Right()
+		left := n.Front()
+		right := n.Next()
 
 		if tn, ok := right.(*TokenNode); ok {
 			c.EmitLine(fmt.Sprintf("PUSH %s", tn.Token))
 		} else if _, ok := right.(*OpNode); ok {
-			c.compNode(n.Right())
+			c.compNode(right)
 		}
 		if tn, ok := left.(*TokenNode); ok {
 			c.EmitLine(fmt.Sprintf("SET %s", tn.Token))
 		}
 
 	case *OpNode:
-		left := n.Left()
-		right := n.Right()
+		left := n.Front()
+		right := n.Next()
 
 		c.compNode(left)
 		c.compNode(right)
@@ -110,14 +110,14 @@ func (c *Compiler) compNode(node Node) {
 		}
 
 	case *PrintNode:
-		left := n.Left()
+		left := n.Front()
 
 		c.compNode(left)
 		c.EmitLine("PRINT")
 
 	case *WhileNode:
-		left := n.Left()
-		right := n.Right()
+		left := n.Front()
+		right := n.Next()
 		blockNb = blockNb + 1
 
 		c.EmitLine(fmt.Sprintf("JMP cond%d", blockNb))
@@ -147,7 +147,7 @@ func (c *Compiler) CompTopScope() error {
 	c.writer = bufio.NewWriter(file)
 
 	c.compNode(c.ast)
-  
+
 	c.writer.Flush()
 	return nil
 }

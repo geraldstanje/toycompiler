@@ -43,30 +43,22 @@ func scan(node Node, edges *[]string, labels *[]string) {
 	if node == nil {
 		return
 	}
-	if node.Left() != nil {
+
+	for e := node.Front(); e != nil; e = node.Next() {
 		edge1 := intToString(node.NodeId())
-		edge2 := intToString(node.Left().NodeId())
+		edge2 := intToString(e.NodeId())
 
 		edge := "\t" + edge1 + " -> " + edge2
 		label := "\t" + edge1 + " [label=\"" + createLabel(node) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + createLabel(node.Left()) + "\"];"
+		label += "\t" + edge2 + " [label=\"" + createLabel(e) + "\"];"
 
 		*edges = append(*edges, edge)
 		*labels = append(*labels, label)
 	}
-	if node.Right() != nil {
-		edge1 := intToString(node.NodeId())
-		edge2 := intToString(node.Right().NodeId())
 
-		edge := "\t" + edge1 + " -> " + edge2
-		label := "\t" + edge1 + " [label=\"" + createLabel(node) + "\"];" + "\n"
-		label += "\t" + edge2 + " [label=\"" + createLabel(node.Right()) + "\"];"
-
-		*edges = append(*edges, edge)
-		*labels = append(*labels, label)
+	for e := node.Front(); e != nil; e = node.Next() {
+		scan(e, edges, labels)
 	}
-	scan(node.Left(), edges, labels)
-	scan(node.Right(), edges, labels)
 }
 
 // Convert converts the tree into DOT format

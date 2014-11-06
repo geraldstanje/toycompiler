@@ -5,26 +5,44 @@ var blockNb int
 
 type Node interface {
 	NodeId() int
-	Left() Node
-	Right() Node
+	Front() Node
+	Next() Node
 }
 
 type BasicNode struct {
 	BasicNodeId int
-	left        Node
-	right       Node
+	currChild   int
+	children    []Node
+}
+
+func CreateBasicNode(id int) BasicNode {
+	b := BasicNode{BasicNodeId: count}
+	b.children = make([]Node, 0)
+	return b
+}
+
+func (b *BasicNode) AppendChild(n Node) {
+	b.children = append(b.children, n)
 }
 
 func (b *BasicNode) NodeId() int {
 	return b.BasicNodeId
 }
 
-func (b *BasicNode) Left() Node {
-	return b.left
+func (b *BasicNode) Front() Node {
+	b.currChild = 0
+	if len(b.children) < 1 {
+		return nil
+	}
+	return b.children[b.currChild]
 }
 
-func (b *BasicNode) Right() Node {
-	return b.right
+func (b *BasicNode) Next() Node {
+	b.currChild = b.currChild + 1
+	if b.currChild >= len(b.children) {
+		return nil
+	}
+	return b.children[b.currChild]
 }
 
 type ProgramNode struct {
@@ -54,32 +72,43 @@ type PrintNode struct {
 }
 
 func newProgramNode(l Node, r Node) Node {
+	b := CreateBasicNode(count)
+
 	if r != nil {
+		b.AppendChild(l)
+		b.AppendChild(r)
 		e := &ProgramNode{
-			BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+			BasicNode: b,
 		}
 		count++
 		return e
 	}
 
+	b.AppendChild(l)
 	e := &ProgramNode{
-		BasicNode: BasicNode{BasicNodeId: count, left: l},
+		BasicNode: b,
 	}
 	count++
 	return e
 }
 
 func newAssignNode(l Node, r Node) Node {
+	b := CreateBasicNode(count)
+	b.AppendChild(l)
+	b.AppendChild(r)
+
 	e := &AssignNode{
-		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+		BasicNode: b,
 	}
 	count++
 	return e
 }
 
 func newTokenNode(str string) Node {
+	b := CreateBasicNode(count)
+
 	e := &TokenNode{
-		BasicNode: BasicNode{BasicNodeId: count},
+		BasicNode: b,
 		Token:     str,
 	}
 	count++
@@ -87,8 +116,12 @@ func newTokenNode(str string) Node {
 }
 
 func newOpNode(str string, l Node, r Node) Node {
+	b := CreateBasicNode(count)
+	b.AppendChild(l)
+	b.AppendChild(r)
+
 	e := &OpNode{
-		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+		BasicNode: b,
 		Operator:  str,
 	}
 	count++
@@ -96,16 +129,23 @@ func newOpNode(str string, l Node, r Node) Node {
 }
 
 func newWhileNode(l Node, r Node) Node {
+	b := CreateBasicNode(count)
+	b.AppendChild(l)
+	b.AppendChild(r)
+
 	e := &WhileNode{
-		BasicNode: BasicNode{BasicNodeId: count, left: l, right: r},
+		BasicNode: b,
 	}
 	count++
 	return e
 }
 
 func newPrintNode(l Node) Node {
+	b := CreateBasicNode(count)
+	b.AppendChild(l)
+
 	e := &PrintNode{
-		BasicNode: BasicNode{BasicNodeId: count, left: l},
+		BasicNode: b,
 	}
 	count++
 	return e
