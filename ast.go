@@ -77,6 +77,7 @@ func newProgramNode(l Node, r Node) Node {
 	if r != nil {
 		b.AppendChild(l)
 		b.AppendChild(r)
+    
 		e := &ProgramNode{
 			BasicNode: b,
 		}
