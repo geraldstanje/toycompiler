@@ -7,6 +7,7 @@ type Node interface {
 	NodeId() int
 	Front() Node
 	Next() Node
+	AppendChild(Node)
 }
 
 type BasicNode struct {
@@ -45,6 +46,15 @@ func (b *BasicNode) Next() Node {
 	return b.children[b.currChild]
 }
 
+type DeclarationNode struct {
+	BasicNode
+}
+
+type FunctionDeclNode struct {
+	BasicNode
+	name string
+}
+
 type ProgramNode struct {
 	BasicNode
 }
@@ -71,13 +81,48 @@ type PrintNode struct {
 	BasicNode
 }
 
+func newDeclarationNode(l Node) Node {
+	b := CreateBasicNode(count)
+	b.AppendChild(l)
+
+	e := &DeclarationNode{
+		BasicNode: b,
+	}
+	count++
+	return e
+}
+
+func newFunctionDeclNode(funcName string, l Node, r Node) Node {
+	b := CreateBasicNode(count)
+
+	if r != nil {
+		b.AppendChild(l)
+		b.AppendChild(r)
+
+		e := &FunctionDeclNode{
+			BasicNode: b,
+			name:      funcName,
+		}
+		count++
+		return e
+	}
+
+	b.AppendChild(l)
+	e := &FunctionDeclNode{
+		BasicNode: b,
+		name:      funcName,
+	}
+	count++
+	return e
+}
+
 func newProgramNode(l Node, r Node) Node {
 	b := CreateBasicNode(count)
 
 	if r != nil {
 		b.AppendChild(l)
 		b.AppendChild(r)
-    
+
 		e := &ProgramNode{
 			BasicNode: b,
 		}

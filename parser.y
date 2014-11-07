@@ -5,6 +5,7 @@ package dsl
 %union {
   s string
   node Node
+  funcName string
 }
 
 %token WHILE
@@ -19,7 +20,43 @@ package dsl
 %token END_BLOCK
 %token NUMBER
 %token IDENTIFIER
+%token FUNC
 %%
+
+program: declarations 
+{
+}
+
+declarations: declaration
+{
+  declarationNode := newDeclarationNode($1.node)
+  $$.node = declarationNode
+  
+  cast(yylex).SetAstRoot($$.node)
+}
+
+declaration: fun_declaration
+{  
+  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node, nil)
+  $$.node = functionDeclNode
+}
+| fun_declaration declaration
+{  
+  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node, $2.node)
+  $$.node = functionDeclNode
+}
+
+fun_declaration: FUNC IDENTIFIER BEGIN_EXPRESSION END_EXPRESSION block
+{ 
+  $$.funcName = $2.s
+  $$.node = $5.node
+}
+
+block: BEGIN_BLOCK program END_BLOCK
+{
+  $$.node = $2.node
+}
+
 program: statement
 {
   $$.node = $1.node
@@ -28,17 +65,13 @@ program: statement
 {   
   programNode := newProgramNode($1.node, nil)
   $$.node = programNode
-
-  cast(yylex).SetAstRoot($$.node)
 }
 | statement END_LINE program 
 {
   programNode := newProgramNode($1.node, $3.node)
   $$.node = programNode
-
-  cast(yylex).SetAstRoot($$.node)
 }
-
+   
 statement: assignation 
 {
   $$.node = $1.node
@@ -89,6 +122,6 @@ expression: NUMBER
 {
   $$.node = newTokenNode($1.s)
 }
-               
+              
 %%
 func cast(y yyLexer) *Compiler { return y.(*Lexer).p }

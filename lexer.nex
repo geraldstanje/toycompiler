@@ -1,3 +1,4 @@
+/func/            { return FUNC }
 /while/           { return WHILE }
 /print/           { return PRINT }
 /;/               { return END_LINE }
