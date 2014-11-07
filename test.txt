@@ -1,6 +1,16 @@
-a = 0;
-a = a + 5;
-while (a-10) {
-    print a;
-    a = a+1;
+func foo() {
+  c = 1;
+}
+
+func bar() {
+  d = 1;
+}
+
+func main() {
+  a = 0;
+  a = a + 5;
+  while (a-10) {
+      print a;
+      a = a+1;
+  }
 }
