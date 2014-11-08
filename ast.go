@@ -81,9 +81,12 @@ type PrintNode struct {
 	BasicNode
 }
 
-func newDeclarationNode(l Node) Node {
+func newDeclarationNode(n []Node) Node {
 	b := CreateBasicNode(count)
-	b.AppendChild(l)
+
+	for _, e := range n {
+		b.AppendChild(e)
+	}
 
 	e := &DeclarationNode{
 		BasicNode: b,
@@ -92,20 +95,8 @@ func newDeclarationNode(l Node) Node {
 	return e
 }
 
-func newFunctionDeclNode(funcName string, l Node, r Node) Node {
+func newFunctionDeclNode(funcName string, l Node) Node {
 	b := CreateBasicNode(count)
-
-	if r != nil {
-		b.AppendChild(l)
-		b.AppendChild(r)
-
-		e := &FunctionDeclNode{
-			BasicNode: b,
-			name:      funcName,
-		}
-		count++
-		return e
-	}
 
 	b.AppendChild(l)
 	e := &FunctionDeclNode{

@@ -6,6 +6,7 @@ package dsl
   s string
   node Node
   funcName string
+  funcDecl []Node
 }
 
 %token WHILE
@@ -29,7 +30,7 @@ program: declarations
 
 declarations: declaration
 {
-  declarationNode := newDeclarationNode($1.node)
+  declarationNode := newDeclarationNode($$.funcDecl)
   $$.node = declarationNode
   
   cast(yylex).SetAstRoot($$.node)
@@ -37,13 +38,14 @@ declarations: declaration
 
 declaration: fun_declaration
 {  
-  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node, nil)
-  $$.node = functionDeclNode
+  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node)
+  $$.funcDecl = append($$.funcDecl, functionDeclNode)
 }
 | fun_declaration declaration
 {  
-  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node, $2.node)
-  $$.node = functionDeclNode
+  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node)
+  $2.funcDecl = append($2.funcDecl, functionDeclNode)
+  $$ = $2
 }
 
 fun_declaration: FUNC IDENTIFIER BEGIN_EXPRESSION END_EXPRESSION block
