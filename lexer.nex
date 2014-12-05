@@ -1,4 +1,3 @@
-/func/            { return FUNC }
 /while/           { return WHILE }
 /print/           { return PRINT }
 /;/               { return END_LINE }
@@ -10,14 +9,11 @@
 /\{/              { return BEGIN_BLOCK }
 /\}/              { return END_BLOCK }
 /[0-9]+/          { lval.s = yylex.Text(); return NUMBER }
-/[a-z][a-z0-9]*/  { lval.s = yylex.Text(); return IDENTIFIER }
-/\n+/             { lineno += len(yylex.Text()) }
+/[a-z][a-z0-9_]*/ { lval.s = yylex.Text(); return IDENTIFIER }
 //
 package dsl
 import "fmt"
 
-var lineno int
-
 func (yylex Lexer) Error(e string) {
-  yylex.p.err = fmt.Sprintf(":%d: error before: '%s'", lineno, yylex.Text())
+  yylex.p.err = fmt.Sprintf("%v:%v: error: %q undeclared", yylex.Line(), yylex.Column(), yylex.Text())
 }
