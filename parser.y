@@ -5,8 +5,6 @@ package dsl
 %union {
   s string
   node Node
-  funcName string
-  funcDecl []Node
 }
 
 %token WHILE
@@ -21,109 +19,79 @@ package dsl
 %token END_BLOCK
 %token NUMBER
 %token IDENTIFIER
-%token FUNC
+
+%token <s> IDENTIFIER STRING NUMBER ADD_OP MUL_OP
+%type <node> program assignation structure expression statement
 %%
-
-program: declarations 
-{
-}
-
-declarations: declaration
-{
-  declarationNode := newDeclarationNode($$.funcDecl)
-  $$.node = declarationNode
-  
-  cast(yylex).SetAstRoot($$.node)
-}
-
-declaration: fun_declaration
-{  
-  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node)
-  $$.funcDecl = append($$.funcDecl, functionDeclNode)
-}
-| fun_declaration declaration
-{  
-  functionDeclNode := newFunctionDeclNode($1.funcName, $1.node)
-  $2.funcDecl = append($2.funcDecl, functionDeclNode)
-  $$ = $2
-}
-
-fun_declaration: FUNC IDENTIFIER BEGIN_EXPRESSION END_EXPRESSION block
-{ 
-  $$.funcName = $2.s
-  $$.node = $5.node
-}
-
-block: BEGIN_BLOCK program END_BLOCK
-{
-  $$.node = $2.node
-}
-
 program: statement
 {
-  $$.node = $1.node
+  $$ = $1
 }
 | statement END_LINE
 {   
-  programNode := newProgramNode($1.node, nil)
-  $$.node = programNode
+  programNode := newProgramNode($1, nil)
+  $$ = programNode
+
+  cast(yylex).SetAstRoot($$)
 }
 | statement END_LINE program 
 {
-  programNode := newProgramNode($1.node, $3.node)
-  $$.node = programNode
+  programNode := newProgramNode($1, $3)
+  $$ = programNode
+
+  cast(yylex).SetAstRoot($$)
 }
-   
+
 statement: assignation 
 {
-  $$.node = $1.node
+  $$ = $1
 }
 | structure
 {
-  $$.node = $1.node
+  $$ = $1
 }
 | PRINT expression
 {
-  printNode := newPrintNode($2.node)
-  $$.node = printNode
+  printNode := newPrintNode($2)
+  $$ = printNode
 }
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
-  tokenNode := newTokenNode($1.s)
-  assignNode := newAssignNode(tokenNode, $3.node) // assign.Right = $3.node ... the expression is already a node, so we just assign it directly
-  $$.node = assignNode
+  tokenNode := newTokenNode($1)
+  assignNode := newAssignNode(tokenNode, $3) // assign.Right = $3 ... the expression is already a node, so we just assign it directly
+  $$ = assignNode
 }
 
 structure: WHILE expression BEGIN_BLOCK program END_BLOCK
 {
-   whileNode := newWhileNode($2.node, $4.node)
-   $$.node = whileNode
+   whileNode := newWhileNode($2, $4)
+   $$ = whileNode
 }
 
 expression: NUMBER 
 { 
-  $$.node = newTokenNode($1.s)
+  $$ = newTokenNode($1)
 }
 | BEGIN_EXPRESSION expression END_EXPRESSION
 {
-  programNode := newProgramNode($2.node, nil)
-  $$.node = programNode
+  programNode := newProgramNode($2, nil)
+  $$ = programNode
 }
 | expression ADD_OP expression
 {
-  opNode := newOpNode($2.s, $1.node, $3.node)
-  $$.node = opNode
+  opNode := newOpNode($2, $1, $3)
+  $$ = opNode
 }
 | expression MUL_OP expression
 {
-  opNode := newOpNode($2.s, $1.node, $3.node)
-  $$.node = opNode
+  opNode := newOpNode($2, $1, $3)
+  $$ = opNode
 }
 | IDENTIFIER
 {
-  $$.node = newTokenNode($1.s)
+  $$ = newTokenNode($1)
 }
-              
+               
 %%
 func cast(y yyLexer) *Compiler { return y.(*Lexer).p }
