@@ -30,19 +30,16 @@ program: statement
 | statement program
 {
   $$ = newProgramNode($1, $2)
-
   cast(yylex).SetAstRoot($$)
 }
 | statement END_LINE
 {
   $$ = newProgramNode($1, nil)
-
   cast(yylex).SetAstRoot($$)
 }
 | statement END_LINE program 
 {
   $$ = newProgramNode($1, $3)
-
   cast(yylex).SetAstRoot($$)
 }
 
