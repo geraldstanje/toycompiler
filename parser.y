@@ -29,22 +29,19 @@ program: statement
 }
 | statement program
 {
-  programNode := newProgramNode($1, $2)
-  $$ = programNode
+  $$ = newProgramNode($1, $2)
 
   cast(yylex).SetAstRoot($$)
 }
 | statement END_LINE
-{   
-  programNode := newProgramNode($1, nil)
-  $$ = programNode
+{
+  $$ = newProgramNode($1, nil)
 
   cast(yylex).SetAstRoot($$)
 }
 | statement END_LINE program 
 {
-  programNode := newProgramNode($1, $3)
-  $$ = programNode
+  $$ = newProgramNode($1, $3)
 
   cast(yylex).SetAstRoot($$)
 }
@@ -59,21 +56,18 @@ statement: assignation
 }
 | PRINT expression
 {
-  printNode := newPrintNode($2)
-  $$ = printNode
+  $$ = newPrintNode($2)
 }
 
 assignation: IDENTIFIER ASSIGN expression 
 {   
   tokenNode := newTokenNode($1)
-  assignNode := newAssignNode(tokenNode, $3) // assign.Right = $3 ... the expression is already a node, so we just assign it directly
-  $$ = assignNode
+  $$ = newAssignNode(tokenNode, $3) // assign.Right = $3 ... the expression is already a node, so we just assign it directly
 }
 
 structure: WHILE expression BEGIN_BLOCK program END_BLOCK
 {
-  whileNode := newWhileNode($2, $4)
-  $$ = whileNode
+  $$ = newWhileNode($2, $4)
 }
 
 expression: NUMBER 
@@ -82,18 +76,15 @@ expression: NUMBER
 }
 | BEGIN_EXPRESSION expression END_EXPRESSION
 {
-  programNode := newProgramNode($2, nil)
-  $$ = programNode
+  $$ = newProgramNode($2, nil)
 }
 | expression ADD_OP expression
 {
-  opNode := newOpNode($2, $1, $3)
-  $$ = opNode
+  $$ = newOpNode($2, $1, $3)
 }
 | expression MUL_OP expression
 {
-  opNode := newOpNode($2, $1, $3)
-  $$ = opNode
+  $$ = newOpNode($2, $1, $3)
 }
 | IDENTIFIER
 {
