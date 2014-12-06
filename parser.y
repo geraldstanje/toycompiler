@@ -27,6 +27,13 @@ program: statement
 {
   $$ = $1
 }
+| statement program
+{
+  programNode := newProgramNode($1, $2)
+  $$ = programNode
+
+  cast(yylex).SetAstRoot($$)
+}
 | statement END_LINE
 {   
   programNode := newProgramNode($1, nil)
@@ -65,8 +72,8 @@ assignation: IDENTIFIER ASSIGN expression
 
 structure: WHILE expression BEGIN_BLOCK program END_BLOCK
 {
-   whileNode := newWhileNode($2, $4)
-   $$ = whileNode
+  whileNode := newWhileNode($2, $4)
+  $$ = whileNode
 }
 
 expression: NUMBER 
