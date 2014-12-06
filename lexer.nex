@@ -15,5 +15,5 @@ package dsl
 import "fmt"
 
 func (yylex Lexer) Error(e string) {
-  yylex.p.err = fmt.Sprintf("%v:%v: error: %q undeclared", yylex.Line(), yylex.Column(), yylex.Text())
+  yylex.p.err = fmt.Sprintf(":%v:%v: error: %q undeclared", yylex.Line()+1, yylex.Column(), yylex.Text())
 }
