@@ -6,9 +6,9 @@ import (
 )
 
 type Compiler struct {
-	err        string
-	ast        Node
-	asmCodegen CodeGenerator
+	err     string
+	ast     Node
+	codegen CodeGenerator
 }
 
 func NewCompiler() *Compiler {
@@ -46,7 +46,7 @@ func (c *Compiler) PlotAst(filename string) error {
 }
 
 func (c *Compiler) CompTopScope() error {
-	c.asmCodegen = NewAsmCodeGenerator()
-	err := c.asmCodegen.CompTopScope(c.ast)
+	c.codegen = NewAsmCodeGenerator()
+	err := c.codegen.CompTopScope(c.ast)
 	return err
 }
