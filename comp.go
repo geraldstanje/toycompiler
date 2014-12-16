@@ -45,7 +45,7 @@ func (c *Compiler) PlotAst(filename string) error {
 	return err
 }
 
-func (c *Compiler) CompTopScope() error {
+func (c *Compiler) GenerateCode() error {
 	c.codegen = NewAsmCodeGenerator()
 	err := c.codegen.CompTopScope(c.ast)
 	return err

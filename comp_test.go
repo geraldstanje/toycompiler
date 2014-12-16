@@ -14,7 +14,7 @@ func TestMyDsl(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = c.CompTopScope()
+	err = c.GenerateCode()
 	if err != nil {
 		t.Fatal(err)
 	}
