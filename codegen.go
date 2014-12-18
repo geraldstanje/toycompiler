@@ -50,6 +50,10 @@ func (c *AsmCodeGenerator) compNode(node Node) {
 		c.compNode(n.Front())
 		c.compNode(n.Next())
 
+	case *StatementNode:
+		c.compNode(n.Front())
+		c.compNode(n.Next())
+
 	case *TokenNode:
 		c.EmitLine(fmt.Sprintf("PUSH %s", n.Token))
 

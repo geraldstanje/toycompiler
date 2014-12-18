@@ -46,16 +46,11 @@ func (b *BasicNode) Next() Node {
 	return b.children[b.currChild]
 }
 
-type DeclarationNode struct {
-	BasicNode
-}
-
-type FunctionDeclNode struct {
-	BasicNode
-	name string
-}
-
 type ProgramNode struct {
+	BasicNode
+}
+
+type StatementNode struct {
 	BasicNode
 }
 
@@ -81,40 +76,25 @@ type PrintNode struct {
 	BasicNode
 }
 
-func newDeclarationNode(n []Node) Node {
+func newProgramNode(n Node) Node {
 	b := CreateBasicNode(count)
+	b.AppendChild(n)
 
-	for _, e := range n {
-		b.AppendChild(e)
-	}
-
-	e := &DeclarationNode{
+	e := &ProgramNode{
 		BasicNode: b,
 	}
 	count++
 	return e
 }
 
-func newFunctionDeclNode(funcName string, l Node) Node {
-	b := CreateBasicNode(count)
-
-	b.AppendChild(l)
-	e := &FunctionDeclNode{
-		BasicNode: b,
-		name:      funcName,
-	}
-	count++
-	return e
-}
-
-func newProgramNode(l Node, r Node) Node {
+func newStatementNode(l Node, r Node) Node {
 	b := CreateBasicNode(count)
 
 	if r != nil {
 		b.AppendChild(l)
 		b.AppendChild(r)
 
-		e := &ProgramNode{
+		e := &StatementNode{
 			BasicNode: b,
 		}
 		count++
@@ -122,7 +102,7 @@ func newProgramNode(l Node, r Node) Node {
 	}
 
 	b.AppendChild(l)
-	e := &ProgramNode{
+	e := &StatementNode{
 		BasicNode: b,
 	}
 	count++

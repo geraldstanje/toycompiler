@@ -14,14 +14,11 @@ func intToString(value int) string {
 
 func createLabel(node Node) string {
 	switch n := node.(type) {
-	case *DeclarationNode:
-		return "Declaration"
-
-	case *FunctionDeclNode:
-		return "FunctionDecl" + "\n" + n.name
-
 	case *ProgramNode:
 		return "Program"
+
+	case *StatementNode:
+		return "Stm"
 
 	case *TokenNode:
 		return n.Token
