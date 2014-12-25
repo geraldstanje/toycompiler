@@ -13,7 +13,6 @@ type CodeGenerator interface {
 
 type AsmCodeGenerator struct {
 	err    string
-	ast    Node
 	indent int
 	writer *bufio.Writer
 }
@@ -117,8 +116,6 @@ func (c *AsmCodeGenerator) compNode(node Node) {
 }
 
 func (c *AsmCodeGenerator) CompTopScope(ast Node) error {
-	c.ast = ast
-
 	file, err := os.Create("generated.txt")
 	defer file.Close()
 	if err != nil {
@@ -126,7 +123,7 @@ func (c *AsmCodeGenerator) CompTopScope(ast Node) error {
 	}
 	c.writer = bufio.NewWriter(file)
 
-	c.compNode(c.ast)
+	c.compNode(ast)
 
 	c.writer.Flush()
 	return nil
