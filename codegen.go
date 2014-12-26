@@ -12,7 +12,6 @@ type CodeGenerator interface {
 }
 
 type AsmCodeGenerator struct {
-	err    string
 	indent int
 	writer *bufio.Writer
 }
